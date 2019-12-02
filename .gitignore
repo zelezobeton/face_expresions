@@ -2,5 +2,7 @@
 
 !.gitignore
 !facial_landmarks.py
+!face_training.py
+!helpers.py
 !requirements.txt
 !README.md
