@@ -44,24 +44,24 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-def load_dataset():
+def load_dataset(name):
     transform = transforms.Compose(
-        # [transforms.Resize((100, 200)),
         [transforms.Resize((32, 32)),
          transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     
-    trainset = torchvision.datasets.ImageFolder('train_dataset/eyes', transform=transform)
+    trainset = torchvision.datasets.ImageFolder(f'train_dataset/{name}', transform=transform)
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=4, shuffle=True, num_workers=2)
-        # trainset, batch_size=1, shuffle=True, num_workers=2)
 
-    testset = torchvision.datasets.ImageFolder('test_dataset/eyes', transform=transform)
+    testset = torchvision.datasets.ImageFolder(f'test_dataset/{name}', transform=transform)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=4, shuffle=False, num_workers=2)
-        # testset, batch_size=1, shuffle=False, num_workers=2)
 
-    classes = ('closed', 'frowned', 'normal', 'wide_open')
+    if name == 'eyes':
+        classes = ('closed', 'frowned', 'normal', 'wide_open')
+    elif name == 'mouth':
+        classes = ('normal', 'open', 'smile', 'wide_smile')
 
     return trainset, trainloader, testset, testloader, classes
 
@@ -138,8 +138,15 @@ def train_network(trainloader, optimizer, net, criterion):
     print('Finished Training')
 
 def main():
+    # Parse args
+    if len(sys.argv) == 3:
+        mode = sys.argv[1]
+        name = sys.argv[2]
+    else:
+        print('Not enough arguments!')
+
     # Loading and normalizing image dataset
-    trainset, trainloader, testset, testloader, classes = load_dataset()
+    trainset, trainloader, testset, testloader, classes = load_dataset(name)
     
     # Show some random images
     # show_random_images(trainloader, classes)
@@ -152,14 +159,14 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    if len(sys.argv) == 2 and sys.argv[1] == "--train":
+    if mode == '--train':
         # Train the network
         train_network(trainloader, optimizer, net, criterion)
         # Save model parameters
-        torch.save(net.state_dict(), "./parameters.pt")
-    else:
+        torch.save(net.state_dict(), f'./{name}.pt')
+    elif mode == '--test':
         # Load model parameters
-        net.load_state_dict(torch.load("./parameters.pt"))
+        net.load_state_dict(torch.load(f'./{name}.pt'))
 
     # Test network with test dataset
     test_network(testloader, classes, net)

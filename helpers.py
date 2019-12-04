@@ -118,9 +118,9 @@ def create_dataset(rects, predictor, gray, image):
         shape = face_utils.shape_to_np(shape)
 
         EMOTICON_LANDMARKS_IDXS = [
-            # ("mouth", (48, 68), (None, None)),
-            ("right_eye", (17, 22), (36, 42)),
-            ("left_eye", (22, 27), (42, 48)),
+            ("mouth", (48, 68), (None, None)),
+            # ("right_eye", (17, 22), (36, 42)),
+            # ("left_eye", (22, 27), (42, 48)),
         ]
 
         # loop over the face parts individually
@@ -132,7 +132,7 @@ def create_dataset(rects, predictor, gray, image):
                 0.7, (0, 0, 255), 2)
             
             if k is None and l is None:
-                landmarks = shape[i:j]
+                landmarks = np.append(shape[i:j], [shape[6], shape[10], shape[33]], axis=0)
             else:
                 landmarks = np.concatenate((shape[i:j], shape[k:l]), axis=0)
                 
@@ -144,10 +144,10 @@ def create_dataset(rects, predictor, gray, image):
             roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
 
             # show the particular face part
-            if name == 'right_eye':
-                roi = cv2.flip(roi, 1)
+            # if name == 'right_eye':
+            #     roi = cv2.flip(roi, 1)
             cv2.imshow("ROI", roi)
-            # timestamp = int(time.time())
-            # folder = 'train_dataset/eyes/closed'
-            # cv2.imwrite(f'{folder}/{timestamp}.png', roi) 
+            timestamp = int(time.time())
+            folder = 'train_dataset/mouth/open'
+            cv2.imwrite(f'{folder}/{timestamp}.png', roi) 
             cv2.waitKey(0)
