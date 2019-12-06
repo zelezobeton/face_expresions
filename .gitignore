@@ -1,8 +1,10 @@
 /*
 
 !.gitignore
-!facial_landmarks.py
-!face_training.py
+!recognize_expression.py
+!faceparts_training.py
 !helpers.py
 !requirements.txt
 !README.md
+!mouth.pt
+!eyes.pt

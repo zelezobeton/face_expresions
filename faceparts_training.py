@@ -3,9 +3,6 @@
 Useful links:
 - https://pytorch.org/docs/master/torchvision/datasets.html#torchvision.datasets.ImageFolder
 - https://pytorch.org/docs/stable/torchvision/transforms.html
-
-NOTE:
-- 40 epochs and loss of cca 0.1 gave pretty good results
 '''
 
 import torch
@@ -24,8 +21,14 @@ import sys
 
 import cv2
 
-''' Define a Convolutional Neural Network '''
+# Define expression classes
+EYE_CLASSES = ('closed', 'frowned', 'normal', 'wide_open')
+MOUTH_CLASSES = ('normal', 'open', 'smile', 'wide_smile')
+
 class Net(nn.Module):
+    '''
+    Define a Convolutional Neural Network
+    '''
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
@@ -45,6 +48,9 @@ class Net(nn.Module):
         return x
 
 def load_dataset(name):
+    '''
+    Load dataset from folders and define transformations done on images
+    '''
     transform = transforms.Compose(
         [transforms.Resize((32, 32)),
          transforms.ToTensor(),
@@ -59,13 +65,12 @@ def load_dataset(name):
         testset, batch_size=4, shuffle=False, num_workers=2)
 
     if name == 'eyes':
-        classes = ('closed', 'frowned', 'normal', 'wide_open')
+        classes = EYE_CLASSES
     elif name == 'mouth':
-        classes = ('normal', 'open', 'smile', 'wide_smile')
+        classes = MOUTH_CLASSES
 
     return trainset, trainloader, testset, testloader, classes
 
-''' Show some random images '''
 def imshow(img):
     # Unnormalize
     img = img / 2 + 0.5     
@@ -74,6 +79,9 @@ def imshow(img):
     plt.show()
 
 def show_random_images(trainloader, classes):
+    '''
+    Show some random images from dataset
+    '''
     # Get some random training images
     dataiter = iter(trainloader)
     images, labels = dataiter.next()
