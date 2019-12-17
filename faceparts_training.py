@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
 '''
+Program for training/testing neural network on dataset of facepart images with 
+different expressions
+
+USE WITH:
+    python faceparts_training.py --MODE FACEPART
+    MODE ... train or test
+    FACEPART ... eyes or mouth
+
 Useful links:
 - https://pytorch.org/docs/master/torchvision/datasets.html#torchvision.datasets.ImageFolder
 - https://pytorch.org/docs/stable/torchvision/transforms.html
 '''
+import sys
 
 import torch
 import torchvision
 import torchvision.transforms as transforms
-# For work with dataset
-import matplotlib.pyplot as plt
-import numpy as np
-# For defining neural network
 import torch.nn as nn
 import torch.nn.functional as F
-# For optimizer
 import torch.optim as optim
-# For args
-import sys
 
+import matplotlib.pyplot as plt
+import numpy as np
 import cv2
 
 # Define expression classes
@@ -72,7 +76,9 @@ def load_dataset(name):
     return trainset, trainloader, testset, testloader, classes
 
 def imshow(img):
-    # Unnormalize
+    '''
+    Unnormalize and show image
+    '''
     img = img / 2 + 0.5     
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
@@ -91,8 +97,10 @@ def show_random_images(trainloader, classes):
     # Show images
     imshow(torchvision.utils.make_grid(images))
 
-''' Test network with test dataset ''' 
 def test_network(testloader, classes, net):
+    '''
+    Test network with test dataset
+    ''' 
     # Show 4 tested images and their values
     dataiter = iter(testloader)
     images, labels = dataiter.next()
@@ -116,8 +124,10 @@ def test_network(testloader, classes, net):
             correct += (predicted == labels).sum().item()
     print('Accuracy of the network on the 8 test images: %d %%' % (100 * correct / total))
 
-''' Train the network '''
 def train_network(trainloader, optimizer, net, criterion):
+    '''
+    Train the network
+    '''
     # Loop over the dataset multiple times
     for epoch in range(40):  
 
@@ -137,7 +147,6 @@ def train_network(trainloader, optimizer, net, criterion):
 
             # Print statistics
             running_loss += loss.item()
-            # if i % 2000 == 1999:    # print every 2000 mini-batches
             if i % 2 == 1:    # print every 2 mini-batches
                 print('[%d, %5d] loss: %.3f' %
                     (epoch + 1, i + 1, running_loss / 2))
