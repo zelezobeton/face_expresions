@@ -1,9 +1,7 @@
 /*
 
 !.gitignore
-!recognize_expression.py
-!faceparts_training.py
-!create_dataset.py
+!src/
 !requirements.txt
 !README.md
 !mouth.pt
