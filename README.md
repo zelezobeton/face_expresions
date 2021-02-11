@@ -1,4 +1,4 @@
-# Pythoon program for detecting eye and mouth expressions
+# Python program for detecting eye and mouth expressions
 
 # Program was written with help of these tutorials:
 - https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
